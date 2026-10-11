@@ -1,0 +1,13 @@
+{
+	"required": false,
+	"minVersion": "0.8",
+	"package": "ai.frankrail.jcmaccel.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"client": [
+		"DynamicTextureCacheMixin",
+		"InitClientMixin"
+	],
+	"injectors": {
+		"defaultRequire": 0
+	}
+}

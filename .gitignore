@@ -1,0 +1,23 @@
+# Gradle
+.gradle/
+build/
+run/
+libs/*.jar
+prodtest/
+*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Profiles
+*.jfr
+*.stacks

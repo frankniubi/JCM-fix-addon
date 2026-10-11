@@ -1,0 +1,54 @@
+plugins {
+	id "fabric-loom" version "1.9-SNAPSHOT"
+}
+
+version = "0.1.1"
+group = "ai.frankrail"
+base { archivesName = "jcmaccel" }
+
+final String fabricApiVersion = "0.92.0+1.20.1"
+// Compile against the MTR route-sign fork jar players run (see README); override with -PmtrJar=<path>.
+final File mtrJar = file(project.findProperty("mtrJar") ?: "libs/MTR-fabric-4.0.5+1.20.1-route-sign.jar")
+// JCM 2.2.3 built with Loom 1.17 (Java 21); we compile against it but load from mods/ at runtime. Override with -PjcmJar=<path>.
+final File jcmJar = file(project.findProperty("jcmJar") ?: "libs/JCM-fabric-2.2.3+1.20.1.jar")
+// All other client mods (Sodium, mtrsignage, addons) loaded from run/mods too, to avoid Loom version checks.
+
+loom {
+	mixin { defaultRefmapName = "jcmaccel.refmap.json" }
+	runs {
+		client {
+			// -Pbench=<label> runs the scripted flight; -Popt=false switches every optimisation off for the A/B baseline.
+			vmArgs "-Xmx6G", "-Djcmaccel.optimize=${project.findProperty('opt') ?: 'true'}", "-Djcmaccel.debug=${project.findProperty('debug') ?: 'false'}"
+			if (project.hasProperty("bench")) {
+				vmArgs "-Djcmaccel.bench=${project.property('bench')}"
+				programArgs "--quickPlaySingleplayer", "jcmbench", "--width", "1600", "--height", "900"
+			}
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:1.20.1"
+	mappings "net.fabricmc:yarn:1.20.1+build.10:v2"
+	modImplementation "net.fabricmc:fabric-loader:0.19.5"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}"
+	modCompileOnly files(mtrJar, jcmJar)
+	modLocalRuntime files(mtrJar)
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+	compileOnly "org.jetbrains:annotations:24.0.0"
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.release = 17
+	options.encoding = "UTF-8"
+}
+
+processResources {
+	inputs.property "version", project.version
+	filesMatching("fabric.mod.json") { expand "version": project.version }
+}

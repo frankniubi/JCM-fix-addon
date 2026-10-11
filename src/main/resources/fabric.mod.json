@@ -1,0 +1,26 @@
+{
+	"schemaVersion": 1,
+	"id": "jcmaccel",
+	"version": "${version}",
+	"name": "MTR/JCM Render Accel",
+	"description": "Client-side render-thread savings for the MTR route-sign fork and JCM: reuses route-sign/route-map textures and close-platform lookups between frames.",
+	"authors": [
+		"FrankRail"
+	],
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"ai.frankrail.jcmaccel.JcmAccelClient"
+		]
+	},
+	"mixins": [
+		"jcmaccel.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.20.1",
+		"mtr": ">=4.0.5 <4.1",
+		"fabric-api": "*"
+	}
+}
